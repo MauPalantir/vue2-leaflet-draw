@@ -924,13 +924,17 @@ module.exports = function escape(url, needQuotes) {
 
 L.Toolbar2.DrawAction = {
   fromHandler: function fromHandler(Handler, defaultToolbarIcon, defaultSubToolbar) {
+    var style = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : {};
+    var featureType = arguments.length > 4 && arguments[4] !== undefined ? arguments[4] : null;
     return L.Toolbar2.Action.extend({
       options: {
+        style: style,
         toolbarIcon: L.extend({}, L.Toolbar2.Action.prototype.options.toolbarIcon, defaultToolbarIcon),
         subToolbar: defaultSubToolbar ? defaultSubToolbar : L.Toolbar2.Action.prototype.options.subToolbar
       },
       initialize: function initialize(map, options) {
         var action = this;
+        this.featureType = featureType;
         this._handler = new Handler(map, options);
 
         this._handler.on('disabled', function () {
@@ -1037,9 +1041,7 @@ L.Toolbar2.DrawAction.Polygon.prototype.deleteLastVertex = function () {
 
 L.Toolbar2.DrawAction.FloodArea = L.Toolbar2.DrawAction.fromHandler(L.Draw.Polygon, {
   className: 'leaflet-draw-draw-floodarea',
-  tooltip: L.drawLocal.draw.toolbar.buttons.polygon,
-  color: 'red',
-  stroke: false
+  tooltip: L.drawLocal.draw.toolbar.buttons.polygon
 }, new L.Toolbar2({
   actions: [L.Toolbar2.DrawAction.Cancel, L.Toolbar2.DrawAction.RemoveLastPoint]
 })); // Support for DrawAction.RemoveLastPoint.
