@@ -928,13 +928,11 @@ L.Toolbar2.DrawAction = {
     var featureType = arguments.length > 4 && arguments[4] !== undefined ? arguments[4] : null;
     return L.Toolbar2.Action.extend({
       options: {
-        style: style,
         toolbarIcon: L.extend({}, L.Toolbar2.Action.prototype.options.toolbarIcon, defaultToolbarIcon),
         subToolbar: defaultSubToolbar ? defaultSubToolbar : L.Toolbar2.Action.prototype.options.subToolbar
       },
       initialize: function initialize(map, options) {
         var action = this;
-        this.featureType = featureType;
         this._handler = new Handler(map, options);
 
         this._handler.on('disabled', function () {
@@ -1039,12 +1037,25 @@ L.Toolbar2.DrawAction.Polygon.prototype.deleteLastVertex = function () {
   this._handler.deleteLastVertex();
 };
 
-L.Toolbar2.DrawAction.FloodArea = L.Toolbar2.DrawAction.fromHandler(L.Draw.Polygon, {
+L.Draw.FloodArea = L.Draw.Polygon.extend({
+  options: {
+    color: 'aquamarine',
+    stroke: false,
+    fill: true,
+    fillOpacity: 0.3
+  },
+  initialize: function initialize(map, options) {
+    this.type = 'polygon';
+    this.featureType = 'FloodArea';
+    L.Draw.Feature.prototype.initialize.call(this, map, options);
+  }
+});
+L.Toolbar2.DrawAction.FloodArea = L.Toolbar2.DrawAction.fromHandler(L.Draw.FloodArea, {
   className: 'leaflet-draw-draw-floodarea',
   tooltip: L.drawLocal.draw.toolbar.buttons.polygon
 }, new L.Toolbar2({
   actions: [L.Toolbar2.DrawAction.Cancel, L.Toolbar2.DrawAction.RemoveLastPoint]
-})); // Support for DrawAction.RemoveLastPoint.
+}), 'FloodArea'); // Support for DrawAction.RemoveLastPoint.
 
 L.Toolbar2.DrawAction.FloodArea.prototype.deleteLastVertex = function () {
   this._handler.deleteLastVertex();
