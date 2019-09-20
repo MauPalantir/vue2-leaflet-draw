@@ -1039,10 +1039,12 @@ L.Toolbar2.DrawAction.Polygon.prototype.deleteLastVertex = function () {
 
 L.Draw.FloodArea = L.Draw.Polygon.extend({
   options: {
-    color: 'aquamarine',
-    stroke: false,
-    fill: true,
-    fillOpacity: 0.3
+    shapeOptions: {
+      color: 'red',
+      stroke: false,
+      fill: true,
+      fillOpacity: 0.3
+    }
   },
   initialize: function initialize(map, options) {
     this.type = 'polygon';
