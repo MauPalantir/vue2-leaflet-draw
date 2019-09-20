@@ -137,7 +137,8 @@ exports.push([module.i, ".leaflet-draw-section{position:relative}.leaflet-draw-t
 
 L.Toolbar2.DrawToolbar = L.Toolbar2.Control.extend({
   options: {
-    actions: [L.Toolbar2.DrawAction.Polygon, L.Toolbar2.DrawAction.Polyline, L.Toolbar2.DrawAction.Marker, L.Toolbar2.DrawAction.Rectangle],
+    actions: [//			L.Toolbar2.DrawAction.Polygon,
+    L.Toolbar2.DrawAction.FloodArea, L.Toolbar2.DrawAction.Polyline, L.Toolbar2.DrawAction.Marker, L.Toolbar2.DrawAction.Rectangle],
     className: 'leaflet-draw-toolbar'
   }
 });
@@ -1016,13 +1017,26 @@ exports.push([module.i, ".leaflet-draw-toolbar.leaflet-control-toolbar{margin-to
 /***/ (function(module, exports) {
 
 L.Toolbar2.DrawAction.Polygon = L.Toolbar2.DrawAction.fromHandler(L.Draw.Polygon, {
-  className: 'leaflet-draw-draw-polygon',
+  className: 'leaflet-draw-draw-polygon2',
   tooltip: L.drawLocal.draw.toolbar.buttons.polygon
 }, new L.Toolbar2({
   actions: [L.Toolbar2.DrawAction.Cancel, L.Toolbar2.DrawAction.RemoveLastPoint]
 })); // Support for DrawAction.RemoveLastPoint.
 
 L.Toolbar2.DrawAction.Polygon.prototype.deleteLastVertex = function () {
+  this._handler.deleteLastVertex();
+};
+
+L.Toolbar2.DrawAction.FloodArea = L.Toolbar2.DrawAction.fromHandler(L.Draw.Polygon, {
+  className: 'leaflet-draw-draw-floodarea',
+  tooltip: L.drawLocal.draw.toolbar.buttons.polygon,
+  color: 'red',
+  stroke: false
+}, new L.Toolbar2({
+  actions: [L.Toolbar2.DrawAction.Cancel, L.Toolbar2.DrawAction.RemoveLastPoint]
+})); // Support for DrawAction.RemoveLastPoint.
+
+L.Toolbar2.DrawAction.FloodArea.prototype.deleteLastVertex = function () {
   this._handler.deleteLastVertex();
 };
 
