@@ -137,7 +137,8 @@ exports.push([module.i, ".leaflet-draw-section{position:relative}.leaflet-draw-t
 
 L.Toolbar2.DrawToolbar = L.Toolbar2.Control.extend({
   options: {
-    actions: [L.Toolbar2.DrawAction.Polygon, L.Toolbar2.DrawAction.FloodArea, L.Toolbar2.DrawAction.Polyline, L.Toolbar2.DrawAction.Marker, L.Toolbar2.DrawAction.Rectangle],
+    actions: [//			L.Toolbar2.DrawAction.Polygon,
+    L.Toolbar2.DrawAction.RiverRestoration, L.Toolbar2.DrawAction.FloodArea],
     className: 'leaflet-draw-toolbar'
   }
 });
@@ -323,6 +324,31 @@ L.Toolbar2.DrawAction.Polyline = L.Toolbar2.DrawAction.fromHandler(L.Draw.Polyli
 })); // Support for DrawAction.RemoveLastPoint.
 
 L.Toolbar2.DrawAction.Polyline.prototype.deleteLastVertex = function () {
+  this._handler.deleteLastVertex();
+};
+
+L.Draw.RiverRestoration = L.Draw.Polyline.extend({
+  options: {
+    shapeOptions: {
+      color: 'DodgerBlue',
+      weight: 8
+    }
+  },
+  initialize: function initialize(map, options) {
+    this.type = 'polyline';
+    this.featureType = 'RiverRestoration';
+    L.Draw.Feature.prototype.initialize.call(this, map, options);
+  }
+});
+L.Toolbar2.DrawAction.RiverRestoration = L.Toolbar2.DrawAction.fromHandler(L.Draw.RiverRestoration, {
+  className: 'leaflet-draw-draw-river',
+  tooltip: 'Restore natural river' //L.drawLocal.draw.toolbar.buttons.polygon,
+
+}, new L.Toolbar2({
+  actions: [L.Toolbar2.DrawAction.Cancel, L.Toolbar2.DrawAction.RemoveLastPoint]
+}));
+
+L.Toolbar2.DrawAction.RiverRestoration.prototype.deleteLastVertex = function () {
   this._handler.deleteLastVertex();
 };
 
@@ -915,8 +941,6 @@ module.exports = function escape(url, needQuotes) {
 
 L.Toolbar2.DrawAction = {
   fromHandler: function fromHandler(Handler, defaultToolbarIcon, defaultSubToolbar) {
-    var style = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : {};
-    var featureType = arguments.length > 4 && arguments[4] !== undefined ? arguments[4] : null;
     return L.Toolbar2.Action.extend({
       options: {
         toolbarIcon: L.extend({}, L.Toolbar2.Action.prototype.options.toolbarIcon, defaultToolbarIcon),
@@ -1030,15 +1054,11 @@ L.Toolbar2.DrawAction.Polygon.prototype.deleteLastVertex = function () {
 
 L.Draw.FloodArea = L.Draw.Polygon.extend({
   options: {
-    color: 'red',
-    stroke: false,
-    fill: true,
-    fillOpacity: 0.3,
     shapeOptions: {
-      color: 'red',
+      color: 'turquoise',
       stroke: false,
       fill: true,
-      fillOpacity: 0.3
+      fillOpacity: 0.5
     }
   },
   initialize: function initialize(map, options) {
@@ -1049,10 +1069,11 @@ L.Draw.FloodArea = L.Draw.Polygon.extend({
 });
 L.Toolbar2.DrawAction.FloodArea = L.Toolbar2.DrawAction.fromHandler(L.Draw.FloodArea, {
   className: 'leaflet-draw-draw-floodarea',
-  tooltip: L.drawLocal.draw.toolbar.buttons.polygon
+  tooltip: 'Add flood area' //L.drawLocal.draw.toolbar.buttons.polygon,
+
 }, new L.Toolbar2({
   actions: [L.Toolbar2.DrawAction.Cancel, L.Toolbar2.DrawAction.RemoveLastPoint]
-}), 'FloodArea'); // Support for DrawAction.RemoveLastPoint.
+})); // Support for DrawAction.RemoveLastPoint.
 
 L.Toolbar2.DrawAction.FloodArea.prototype.deleteLastVertex = function () {
   this._handler.deleteLastVertex();
